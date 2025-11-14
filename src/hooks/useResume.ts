@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { analyzeResume } from '@/services/openai';
 import { updateUserResume } from '@/services/firebase-db';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from '@/lib/firebase';
 import { toast } from 'sonner';
 
 export const useResume = (userId: string) => {
@@ -13,22 +11,15 @@ export const useResume = (userId: string) => {
     try {
       setIsAnalyzing(true);
 
-      // Upload to Firebase Storage
-      const storageRef = ref(storage, `resumes/${userId}/${file.name}`);
-      await uploadBytes(storageRef, file);
-      const downloadURL = await getDownloadURL(storageRef);
-
-      // Extract text (for demo, we'll use file name and simulate)
-      // In production, use a PDF parser library or backend service
+      // Extract text from file
       const resumeText = await extractTextFromFile(file);
 
       // Analyze with OpenAI
       const resumeAnalysis = await analyzeResume(resumeText);
 
-      // Save to Firebase
+      // Save to Firestore (no file storage needed)
       await updateUserResume(userId, {
         ...resumeAnalysis,
-        fileUrl: downloadURL,
         fileName: file.name,
         uploadedAt: new Date().toISOString()
       });

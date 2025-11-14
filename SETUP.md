@@ -11,8 +11,7 @@
 2. Create a new project
 3. Enable Authentication (Email/Password)
 4. Create Firestore Database (start in production mode)
-5. Enable Storage
-6. Go to Project Settings > General and copy your Firebase config
+5. Go to Project Settings > General and copy your Firebase config
 
 ### 2. Environment Variables
 1. Copy `.env.example` to `.env`
@@ -21,7 +20,6 @@
    VITE_FIREBASE_API_KEY=your_api_key
    VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
    VITE_FIREBASE_PROJECT_ID=your_project_id
-   VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
    VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
    VITE_FIREBASE_APP_ID=your_app_id
    ```
@@ -44,7 +42,6 @@ The app will automatically create these collections:
     "education": "string",
     "projects": "number",
     "recommendations": ["string"],
-    "fileUrl": "string",
     "fileName": "string",
     "uploadedAt": "timestamp"
   },
@@ -95,20 +92,6 @@ service cloud.firestore {
 }
 ```
 
-### 5. Storage Rules
-Add these rules in Firebase Console > Storage > Rules:
-
-```javascript
-rules_version = '2';
-service firebase.storage {
-  match /b/{bucket}/o {
-    match /resumes/{userId}/{fileName} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-  }
-}
-```
-
 ## Features Implemented
 
 ### OpenAI Integration
@@ -125,8 +108,7 @@ service firebase.storage {
 
 ### Firebase Integration
 - **Authentication**: Email/password auth
-- **Firestore**: Stores user profiles, interview sessions, questions/answers
-- **Storage**: Stores uploaded resume files
+- **Firestore**: Stores user profiles, interview sessions, questions/answers, and resume analysis
 
 ## Usage in Components
 
